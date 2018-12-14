@@ -6,7 +6,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
-	"net/url"
 	"strconv"
 )
 
@@ -15,7 +14,7 @@ const (
 	tokenSignLen = 11
 )
 
-//Base token base msg
+//Token generation based on TokenInfo
 type TokenInfo struct {
 	Version   int8   `json:"version"`
 	CreateAt  int64  `json:"create_at"`
@@ -104,17 +103,5 @@ func Token(key, namespace []byte, createAt int64) ([]byte, error) {
 	token = append(token, data...)
 	token = append(token, '-')
 	token = append(token, encodedSign...)
-	return token, nil
-}
-
-func ParseAppKey(username string) (string, error) {
-	params, err := url.ParseQuery(username)
-	if err != nil {
-		return "", err
-	}
-	token := params.Get("bifrost-appkey")
-	if len(token) == 0 {
-		return "", errors.New("token is empty")
-	}
 	return token, nil
 }
