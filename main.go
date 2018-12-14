@@ -34,7 +34,6 @@ func main() {
 		fmt.Println("serverkey is empty,Please enter serverkey on the command line")
 		return
 	}
-	//如果username不为空
 	if token != "" && namespace == "" {
 		ns, err := Verify([]byte(token), []byte(serverkey))
 		if err != nil {
