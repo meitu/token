@@ -23,17 +23,17 @@ type TokenInfo struct {
 }
 
 //MarshalBinary Namespace SHOULD NOT contains a colon
-func (t *TokenInfo) MarshalBinary() (data []byte, err error) {
-	data = append(data, t.Namespace...)
+func (ti *TokenInfo) MarshalBinary() (data []byte, err error) {
+	data = append(data, ti.Namespace...)
 	data = append(data, '-')
-	data = append(data, []byte(strconv.FormatInt(t.CreateAt, 10))...)
+	data = append(data, []byte(strconv.FormatInt(ti.CreateAt, 10))...)
 	data = append(data, '-')
-	data = append(data, []byte(strconv.FormatInt(int64(t.Version), 10))...)
+	data = append(data, []byte(strconv.FormatInt(int64(ti.Version), 10))...)
 	return data, nil
 }
 
 //UnmarshalBinary token base unmarshl
-func (t *TokenInfo) UnmarshalBinary(data []byte) error {
+func (ti *TokenInfo) UnmarshalBinary(data []byte) error {
 	fields := bytes.Split(data, []byte{'-'})
 	l := len(fields)
 	if l != 3 {
@@ -44,15 +44,15 @@ func (t *TokenInfo) UnmarshalBinary(data []byte) error {
 	if err != nil {
 		return err
 	}
-	t.Version = int8(version)
+	ti.Version = int8(version)
 
 	createAt, err := strconv.ParseInt(string(fields[l-2]), 10, 64)
 	if err != nil {
 		return err
 	}
-	t.CreateAt = createAt
+	ti.CreateAt = createAt
 
-	t.Namespace = bytes.Join(fields[:l-2], []byte(""))
+	ti.Namespace = bytes.Join(fields[:l-2], []byte(""))
 
 	return nil
 }

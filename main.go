@@ -14,8 +14,8 @@ var (
 )
 
 var Usage = func() {
-	fmt.Println("USAGE: ./main -s=serverkey,-t=token,-n=namespace")
-	fmt.Println("\nThe commond are:\n\t-s   server key \n\t-t client token 。\n\t-n service namespace。")
+	fmt.Println("USAGE: ./token -serverkey=serverkey,-token=token,-namespace=namespace")
+	fmt.Println("\nThe commond are:\n\t-serverkey server key \n\t-token client token 。\n\t-namespac service namespace。")
 }
 
 func main() {
