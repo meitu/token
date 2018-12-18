@@ -23,6 +23,7 @@ func New(key []byte) *Token {
 	return &Token{version: CurrentVesion, key: key}
 }
 
+//Sign used to generate signatures
 func (t *Token) Sign(data []byte) ([]byte, error) {
 	m := &message{version: CurrentVesion, createAt: int64(time.Now().Unix()), payload: data}
 	data, err := m.MarshalBinary()
@@ -47,7 +48,7 @@ func (t *Token) Sign(data []byte) ([]byte, error) {
 	return token, nil
 }
 
-//Verify token auth
+//Verify used to token auth
 func (t *Token) Verify(sign []byte) (bool, error) {
 	encodedSignLen := hex.EncodedLen(tokenSignLen)
 	if len(sign) < encodedSignLen || len(t.key) == 0 {
@@ -65,22 +66,16 @@ func (t *Token) Verify(sign []byte) (bool, error) {
 		return false, errors.New("token mismatch")
 	}
 
-	var m message
-
-	if err := m.UnmarshalBinary(meta); err != nil {
-		return false, err
-	}
-
 	return true, nil
 }
 
+// Message contains the necessary constituent fields for a signature
 type message struct {
 	version  int64
 	createAt int64
 	payload  []byte
 }
 
-//MarshalBinary Namespace SHOULD NOT contains a colon
 func (m *message) MarshalBinary() (data []byte, err error) {
 	data = append(data, m.payload...)
 	data = append(data, '-')
