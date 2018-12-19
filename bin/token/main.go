@@ -36,18 +36,12 @@ func main() {
 	}
 	tt := token.New([]byte(key))
 	if auth != "" {
-		res, err := tt.Verify([]byte(auth))
+		err := tt.Verify([]byte(auth))
 		if err != nil {
 			fmt.Printf("Parse failed :%s\n", err)
-			return
-		}
-		if res {
-			fmt.Println("Prase sucess")
 		} else {
-			fmt.Printf("Prase faild")
-
+			fmt.Println("Prase sucess")
 		}
-		return
 	} else if payload != "" {
 		auth, err := tt.Sign([]byte(payload))
 		if err != nil {
@@ -57,6 +51,5 @@ func main() {
 		fmt.Printf("auth : %s\n", auth)
 		return
 	}
-
 	return
 }

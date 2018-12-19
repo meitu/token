@@ -3,6 +3,8 @@ package token
 import (
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNew(t *testing.T) {
@@ -31,109 +33,103 @@ func TestNew(t *testing.T) {
 	}
 }
 
-/*TODO
-func createMessage(data []byte) *message {
-	m := &message{version: CurrentVesion, createAt: 1545190747, payload: data}
-	return m
-}
-func TestToken_Sign(t *testing.T) {
+func TestTokenSign(t *testing.T) {
 	token := New([]byte("key"))
-	m := createMessage([]byte("bifrost"))
-	assert.NotNil(t, m)
+	assert.NotNil(t, token)
 	type args struct {
 		data []byte
 	}
 	tests := []struct {
 		name string
 		args args
-		want []byte
 	}{
 		{
-			name: "TestSign",
+			name: "TestSignCase1",
 			args: args{
-				data: []byte("bifrost"),
+				data: []byte("TestSignCase1"),
 			},
-			want: []byte{0x62, 0x69, 0x66, 0x72, 0x6f, 0x73, 0x74, 0x2d, 0x31, 0x35, 0x34, 0x35, 0x31, 0x39, 0x30, 0x33, 0x35, 0x33, 0x2d, 0x31, 0x2d, 0x35, 0x31, 0x31, 0x63, 0x39, 0x32, 0x30, 0x30, 0x37, 0x32, 0x34, 0x63, 0x61, 0x32, 0x62, 0x61, 0x31, 0x66, 0x61, 0x38, 0x38, 0x34},
+		},
+		{
+			name: "TestSignCase2",
+			args: args{
+				data: []byte("TestSignCase2"),
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fmt.Println(int64(time.Now().Unix()))
 			got, err := token.Sign(tt.args.data)
 			assert.NotNil(t, got)
 			assert.NoError(t, err)
-			assert.Equal(t, got, tt.want)
+
+			err = token.Verify(got)
+			assert.NoError(t, err)
 		})
 	}
 }
 
-
-func TestToken_Verify(t *testing.T) {
-	type fields struct {
-		version int32
-		key     []byte
-	}
+func TestTokenVerify(t *testing.T) {
+	token := New([]byte("key"))
+	assert.NotNil(t, token)
 	type args struct {
 		sign []byte
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    bool
-		wantErr bool
+		name string
+		args args
 	}{
-		// TODO: Add test cases.
+		{
+			name: "TestVerifyCase1",
+			args: args{
+				sign: []byte("TestVerifyCase1"),
+			},
+		},
+		{
+			name: "TestVerifyCase2",
+			args: args{
+				sign: []byte("TestVerifyCase2"),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t := &Token{
-				version: tt.fields.version,
-				key:     tt.fields.key,
-			}
-			got, err := t.Verify(tt.args.sign)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Token.Verify() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("Token.Verify() = %v, want %v", got, tt.want)
-			}
+			sign, err := token.Sign(tt.args.sign)
+			assert.NotNil(t, sign)
+			assert.NoError(t, err)
+			err = token.Verify(sign)
+			assert.NoError(t, err)
 		})
 	}
 }
 
 func Test_message_MarshalBinary(t *testing.T) {
-	type fields struct {
-		version  int64
-		createAt int64
-		payload  []byte
-	}
+	token := New([]byte("key"))
+	assert.NotNil(t, token)
 	tests := []struct {
 		name     string
-		fields   fields
-		wantData []byte
+		payload  []byte
+		wantData string
 		wantErr  bool
 	}{
-		// TODO: Add test cases.
+		{
+			name:     "TestMarshalBinary",
+			payload:  []byte("TestMarshalBinary"),
+			wantData: "TestMarshalBinary-1545205200-1",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &message{
-				version:  tt.fields.version,
-				createAt: tt.fields.createAt,
-				payload:  tt.fields.payload,
+				version:  CurrentVesion,
+				createAt: 1545205200,
+				payload:  tt.payload,
 			}
 			gotData, err := m.MarshalBinary()
-			if (err != nil) != tt.wantErr {
-				t.Errorf("message.MarshalBinary() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(gotData, tt.wantData) {
-				t.Errorf("message.MarshalBinary() = %v, want %v", gotData, tt.wantData)
-			}
+			assert.NotNil(t, gotData)
+			assert.NoError(t, err)
+
+			assert.Equal(t, string(gotData), tt.wantData)
 		})
 	}
 
 }
-*/

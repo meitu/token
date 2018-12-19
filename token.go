@@ -32,7 +32,6 @@ func (t *Token) Sign(data []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	mac := hmac.New(sha256.New, t.key)
 	mac.Write(data)
 	sign := mac.Sum(nil)
@@ -51,10 +50,10 @@ func (t *Token) Sign(data []byte) ([]byte, error) {
 }
 
 //Verify used to token auth
-func (t *Token) Verify(sign []byte) (bool, error) {
+func (t *Token) Verify(sign []byte) error {
 	encodedSignLen := hex.EncodedLen(tokenSignLen)
 	if len(sign) < encodedSignLen || len(t.key) == 0 {
-		return false, errors.New("token or key is parameter illegal")
+		return errors.New("token or key is parameter illegal")
 	}
 
 	s := make([]byte, tokenSignLen)
@@ -65,13 +64,13 @@ func (t *Token) Verify(sign []byte) (bool, error) {
 	mac.Write(meta)
 
 	if !hmac.Equal(mac.Sum(nil)[:tokenSignLen], s) {
-		return false, errors.New("token mismatch")
+		return errors.New("token mismatch")
 	}
 
-	return true, nil
+	return nil
 }
 
-// Message contains the necessary constituent fields for a signature
+// message contains the necessary constituent fields for a signature
 type message struct {
 	version  int64
 	createAt int64
