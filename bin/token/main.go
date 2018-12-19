@@ -24,6 +24,10 @@ func main() {
 	flag.StringVar(&auth, "auth", "", "client auth")
 	flag.StringVar(&payload, "payload", "", "server payload")
 	flag.Parse()
+	if flag.NFlag() == 0 {
+		flag.Usage()
+		return
+	}
 	if key == "" {
 		fmt.Println("serverkey is empty,Please enter serverkey on the command line")
 		return
