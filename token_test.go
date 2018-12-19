@@ -1,7 +1,6 @@
 package token
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -17,18 +16,25 @@ func TestNew(t *testing.T) {
 		want *Token
 	}{
 		{
-			name: "TestNew",
+			name: "TestNewCase1",
 			args: args{
 				key: []byte("key"),
 			},
 			want: &Token{version: CurrentVesion, key: []byte("key")},
 		},
+		{
+			name: "TestNewCase2",
+			args: args{
+				key: []byte(""),
+			},
+			want: &Token{version: CurrentVesion, key: []byte("")},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := New(tt.args.key); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("New() = %v, want %v", got, tt.want)
-			}
+			got := New(tt.args.key)
+			assert.NotNil(t, got)
+			assert.Equal(t, got, tt.want)
 		})
 	}
 }
@@ -53,6 +59,12 @@ func TestTokenSign(t *testing.T) {
 			name: "TestSignCase2",
 			args: args{
 				data: []byte("TestSignCase2"),
+			},
+		},
+		{
+			name: "TestSignCase2",
+			args: args{
+				data: nil,
 			},
 		},
 	}
@@ -109,7 +121,6 @@ func Test_message_MarshalBinary(t *testing.T) {
 		name     string
 		payload  []byte
 		wantData string
-		wantErr  bool
 	}{
 		{
 			name:     "TestMarshalBinary",
@@ -129,6 +140,7 @@ func Test_message_MarshalBinary(t *testing.T) {
 			assert.NoError(t, err)
 
 			assert.Equal(t, string(gotData), tt.wantData)
+
 		})
 	}
 
