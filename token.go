@@ -16,13 +16,12 @@ const (
 
 //Token is generated based on version and key
 type Token struct {
-	version int32
-	key     []byte
+	key []byte
 }
 
 // New return a token object
 func New(key []byte) *Token {
-	return &Token{version: CurrentVesion, key: key}
+	return &Token{key: key}
 }
 
 //Sign used to generate signatures

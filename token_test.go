@@ -20,14 +20,14 @@ func TestNew(t *testing.T) {
 			args: args{
 				key: []byte("key"),
 			},
-			want: &Token{version: CurrentVesion, key: []byte("key")},
+			want: &Token{key: []byte("key")},
 		},
 		{
 			name: "TestNewCase2",
 			args: args{
 				key: []byte(""),
 			},
-			want: &Token{version: CurrentVesion, key: []byte("")},
+			want: &Token{key: []byte("")},
 		},
 	}
 	for _, tt := range tests {
