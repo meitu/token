@@ -24,7 +24,7 @@ func New(key []byte) *Token {
 	return &Token{key: key}
 }
 
-//Sign used to generate signatures
+// Sign used to generate signatures
 func (t *Token) Sign(data []byte) ([]byte, error) {
 	m := &message{version: CurrentVesion, createAt: int64(time.Now().Unix()), payload: data}
 	data, err := m.MarshalBinary()
@@ -48,7 +48,7 @@ func (t *Token) Sign(data []byte) ([]byte, error) {
 	return token, nil
 }
 
-//Verify used to token auth
+// Verify used to token auth
 func (t *Token) Verify(sign []byte) error {
 	encodedSignLen := hex.EncodedLen(tokenSignLen)
 	if len(sign) < encodedSignLen || len(t.key) == 0 {
