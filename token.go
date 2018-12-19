@@ -14,7 +14,7 @@ const (
 	tokenSignLen  = 11
 )
 
-//Token is generated based on version and key
+// Token is generated based on version and key
 type Token struct {
 	key []byte
 }
