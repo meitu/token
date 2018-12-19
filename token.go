@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	//CurrentVesion is the default initial version
+	//CurrentVesion is the default version
 	CurrentVesion = 1
 	tokenSignLen  = 11
 )
@@ -26,8 +26,8 @@ func New(key []byte) *Token {
 }
 
 // Sign used to generate signatures
-func (t *Token) Sign(data []byte) ([]byte, error) {
-	m := &message{version: CurrentVesion, createAt: int64(time.Now().Unix()), payload: data}
+func (t *Token) Sign(payload []byte) ([]byte, error) {
+	m := &message{version: CurrentVesion, createAt: int64(time.Now().Unix()), payload: payload}
 	data, err := m.MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -49,17 +49,17 @@ func (t *Token) Sign(data []byte) ([]byte, error) {
 	return token, nil
 }
 
-// Verify used to token auth
+// Verify a token
 func (t *Token) Verify(sign []byte) error {
 	encodedSignLen := hex.EncodedLen(tokenSignLen)
-	if len(sign) < encodedSignLen || len(t.key) == 0 {
-		return errors.New("token or key is parameter illegal")
+	if len(sign) < encodedSignLen {
+		return errors.New("invalid size")
 	}
 
 	s := make([]byte, tokenSignLen)
 	hex.Decode(s, sign[len(sign)-encodedSignLen:])
 
-	meta := sign[:len(sign)-encodedSignLen-1] //counting in the ":"
+	meta := sign[:len(sign)-encodedSignLen-1] //counting in the "-"
 	mac := hmac.New(sha256.New, t.key)
 	mac.Write(meta)
 

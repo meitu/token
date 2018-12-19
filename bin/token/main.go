@@ -10,12 +10,12 @@ import (
 func main() {
 	var (
 		key     string
-		auth    string
+		sign    string
 		payload string
 	)
 
 	flag.StringVar(&key, "key", "", "server key")
-	flag.StringVar(&auth, "auth", "", "client auth")
+	flag.StringVar(&sign, "token", "", "client token")
 	flag.StringVar(&payload, "payload", "", "server payload")
 	flag.Parse()
 	if flag.NFlag() == 0 {
@@ -23,32 +23,32 @@ func main() {
 		return
 	}
 	if key == "" {
-		fmt.Println("serverkey is empty,Please enter serverkey on the command line")
+		fmt.Println("key is empty,Please enter key on the command line")
 		return
 	}
-	if auth == "" && payload == "" {
-		fmt.Println("Error parameter. Please enter auth or payload")
+	if sign == "" && payload == "" {
+		fmt.Println("Error parameter. Please enter token or payload")
 		return
 	}
-	if auth != "" && payload != "" {
-		fmt.Println("Parameter error, auth and payload cannot exist simultaneously")
+	if sign != "" && payload != "" {
+		fmt.Println("Parameter error, token and payload cannot exist simultaneously")
 		return
 	}
 	tt := token.New([]byte(key))
-	if auth != "" {
-		err := tt.Verify([]byte(auth))
+	if sign != "" {
+		err := tt.Verify([]byte(sign))
 		if err != nil {
 			fmt.Printf("Parse failed :%s\n", err)
 		} else {
 			fmt.Println("Prase sucess")
 		}
 	} else if payload != "" {
-		auth, err := tt.Sign([]byte(payload))
+		token, err := tt.Sign([]byte(payload))
 		if err != nil {
-			fmt.Printf("Create auth failed %s\n", err)
+			fmt.Printf("Create token failed %s\n", err)
 			return
 		}
-		fmt.Printf("auth : %s\n", auth)
+		fmt.Printf("token : %s\n", token)
 		return
 	}
 	return
