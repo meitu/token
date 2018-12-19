@@ -10,15 +10,18 @@ import (
 )
 
 const (
+	//CurrentVesion is the default initial version
 	CurrentVesion = 1
 	tokenSignLen  = 11
 )
 
+//Token is generated based on version and key
 type Token struct {
 	version int32
 	key     []byte
 }
 
+// New return a token object
 func New(key []byte) *Token {
 	return &Token{version: CurrentVesion, key: key}
 }

@@ -7,18 +7,12 @@ import (
 	"github.com/meitu/token"
 )
 
-var (
-	key     string
-	auth    string
-	payload string
-)
-
-var Usage = func() {
-	fmt.Println("USAGE: ./token -key=key,-auth=auth,-payload=payload")
-	fmt.Println("\nThe commond are:\n\t-key server key \n\t-auth client auth 。\n\t-payload service payload。")
-}
-
 func main() {
+	var (
+		key     string
+		auth    string
+		payload string
+	)
 
 	flag.StringVar(&key, "key", "", "server key")
 	flag.StringVar(&auth, "auth", "", "client auth")
@@ -32,8 +26,16 @@ func main() {
 		fmt.Println("serverkey is empty,Please enter serverkey on the command line")
 		return
 	}
+	if auth == "" && payload == "" {
+		fmt.Println("Error parameter. Please enter auth or payload")
+		return
+	}
+	if auth != "" && payload != "" {
+		fmt.Println("Parameter error, auth and payload cannot exist simultaneously")
+		return
+	}
 	tt := token.New([]byte(key))
-	if auth != "" && payload == "" {
+	if auth != "" {
 		res, err := tt.Verify([]byte(auth))
 		if err != nil {
 			fmt.Printf("Parse failed :%s\n", err)
@@ -46,8 +48,7 @@ func main() {
 
 		}
 		return
-	} else if auth == "" && payload != "" {
-		//Token is generated based on serverkey and namespace
+	} else if payload != "" {
 		auth, err := tt.Sign([]byte(payload))
 		if err != nil {
 			fmt.Printf("Create auth failed %s\n", err)
@@ -55,8 +56,7 @@ func main() {
 		}
 		fmt.Printf("auth : %s\n", auth)
 		return
-	} else {
-		Usage()
 	}
+
 	return
 }
