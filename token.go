@@ -10,8 +10,7 @@ import (
 )
 
 const (
-	//CurrentVesion is the default initial version
-	CurrentVesion = 1
+	CurrentVesion = 1 //CurrentVesion is the default initial version
 	tokenSignLen  = 11
 )
 
