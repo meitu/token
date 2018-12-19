@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	CurrentVesion = 1 //CurrentVesion is the default initial version
+	//CurrentVesion is the default initial version
+	CurrentVesion = 1
 	tokenSignLen  = 11
 )
 
@@ -76,6 +77,7 @@ type message struct {
 	payload  []byte
 }
 
+// MarshalBinary is used to binary code data
 func (m *message) MarshalBinary() (data []byte, err error) {
 	data = append(data, m.payload...)
 	data = append(data, '-')
