@@ -86,31 +86,24 @@ func TestTokenVerify(t *testing.T) {
 	type args struct {
 		sign []byte
 	}
-	type want struct {
-		err error
-	}
 	tests := []struct {
-		name string
-		args args
-		want want
+		name    string
+		args    args
+		wantErr error
 	}{
 		{
 			name: "TestVerifyCase1",
 			args: args{
 				sign: []byte("TestVerifyCase1"),
 			},
-			want: want{
-				err: nil,
-			},
+			wantErr: nil,
 		},
 		{
 			name: "TestVerifyCase2",
 			args: args{
 				sign: []byte(nil),
 			},
-			want: want{
-				err: nil,
-			},
+			wantErr: nil,
 		},
 	}
 	for _, tt := range tests {
@@ -119,7 +112,7 @@ func TestTokenVerify(t *testing.T) {
 			assert.NotNil(t, sign)
 			assert.NoError(t, err)
 			err = token.Verify(sign)
-			assert.Equal(t, err, tt.want.err)
+			assert.Equal(t, err, tt.wantErr)
 		})
 	}
 }
