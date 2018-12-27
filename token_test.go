@@ -87,20 +87,23 @@ func TestTokenVerify(t *testing.T) {
 		sign []byte
 	}
 	tests := []struct {
-		name string
-		args args
+		name    string
+		args    args
+		wantErr error
 	}{
 		{
 			name: "TestVerifyCase1",
 			args: args{
 				sign: []byte("TestVerifyCase1"),
 			},
+			wantErr: nil,
 		},
 		{
 			name: "TestVerifyCase2",
 			args: args{
-				sign: []byte("TestVerifyCase2"),
+				sign: []byte(nil),
 			},
+			wantErr: nil,
 		},
 	}
 	for _, tt := range tests {
@@ -109,12 +112,60 @@ func TestTokenVerify(t *testing.T) {
 			assert.NotNil(t, sign)
 			assert.NoError(t, err)
 			err = token.Verify(sign)
-			assert.NoError(t, err)
+			assert.Equal(t, err, tt.wantErr)
 		})
 	}
 }
 
-func Test_message_MarshalBinary(t *testing.T) {
+func TestTokenAuth(t *testing.T) {
+	token := New([]byte("key"))
+	assert.NotNil(t, token)
+	type args struct {
+		payload []byte
+	}
+	type want struct {
+		res []byte
+		err error
+	}
+	tests := []struct {
+		name string
+		args args
+		want want
+	}{
+		{
+			name: "TestAuthCase1",
+			args: args{
+				payload: []byte("TestAuthCase1"),
+			},
+			want: want{
+				res: []byte("TestAuthCase1"),
+				err: nil,
+			},
+		},
+		{
+			name: "TestAuthCase2",
+			args: args{
+				payload: []byte(nil),
+			},
+			want: want{
+				res: []byte(nil),
+				err: nil,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			sign, err := token.Sign(tt.args.payload)
+			assert.NotNil(t, sign)
+			assert.NoError(t, err)
+			res, err := token.Auth(sign)
+			assert.Equal(t, res, tt.want.res)
+			assert.Equal(t, err, tt.want.err)
+		})
+	}
+}
+
+func Test_messageMarshalBinary(t *testing.T) {
 	token := New([]byte("key"))
 	assert.NotNil(t, token)
 	tests := []struct {
@@ -140,6 +191,36 @@ func Test_message_MarshalBinary(t *testing.T) {
 			assert.NoError(t, err)
 
 			assert.Equal(t, string(gotData), tt.wantData)
+
+		})
+	}
+
+}
+func Test_messageUnMarshalBinary(t *testing.T) {
+	token := New([]byte("key"))
+	assert.NotNil(t, token)
+	tests := []struct {
+		name string
+		data []byte
+		want []byte
+	}{
+		{
+			name: "TestMarshalBinary",
+			data: []byte("TestMarshalBinary-1545205200-1"),
+			want: []byte("TestMarshalBinary"),
+		},
+		{
+			name: "TestMarshalBinary_nil",
+			data: []byte("-1545205200-1"),
+			want: []byte(nil),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &message{}
+			err := m.UnmarshalBinary(tt.data)
+			assert.Equal(t, m.payload, tt.want)
+			assert.NoError(t, err)
 
 		})
 	}
